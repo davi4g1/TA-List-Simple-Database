@@ -1,3 +1,9 @@
+/*
+Program by Davide Forgione
+Assignment for Programming Methedology II, Concordia University
+Winter 2023
+
+
 
 #include <iostream>
 #include <fstream>

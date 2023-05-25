@@ -3,7 +3,25 @@ Program by Davide Forgione
 Assignment for Programming Methedology II, Concordia University
 Winter 2023
 
+Learning concepts include:
+- Object Oriented Programming
+- Use of c++ vectors
+- Use of c++ Sort() algorythm 
+- Use of c++ string streams
+- File Handling
+- Exception Handling
+- Operator Overloading
 
+This is a program that allows a user to add to a list of TA's (teacher assistants)
+TA's have a Satus, Student Number, Name, Year Hired, Age and Program
+The program comes with a file called TAs_list4 that explicitely contains a TA with the status "Alum"
+As per assignment requirements, all TA's with the status "Alum" are filtered out at the start.
+The new list with no "Alums" is displayed.
+User is prompted to add a TA or Sort the list.
+Sorting can be done by descending or ascending order according to any of the data members of a TA listed before.
+TAs_list4 file will be uploaded according to the sort chosen.
+
+*/
 
 #include <iostream>
 #include <fstream>
@@ -30,8 +48,7 @@ public:
 	void setDept(string);
 
 	void changeTA(string,unsigned int,string,unsigned int,unsigned int,string);
-	void printTAs(ofstream&);
-
+	void TAs_to_file(ofstream&);
 
 	string getStatus(){return Status;}
 	unsigned int getStudent_Id(){return Student_Id;}
@@ -52,7 +69,6 @@ private:
 
 };
 
-void changeList(vector<TAs>);
 
 	void TAs::setStatus(string x){Status=x;}
 	void TAs::setStudent_Id(unsigned int x){Student_Id=x;}
@@ -71,13 +87,27 @@ void changeList(vector<TAs>);
 			TAs::setDept(f);
 	}
 
-	void TAs::printTAs(ofstream& x){
+	void TAs::TAs_to_file(ofstream& x){
 
 		 	x<<getStatus()<<"\t"<<getStudent_Id();
 		 	x<<"\t"<<getFirst_Name();
 		 	x<<"\t"<<getYear_Hired()<<"\t"<<getAge()<<"\t"<<getDept()<<"\t";
+
 	}
 
+
+
+	template <typename T>
+	ostream& operator<<(ostream& os, vector<T>& v)
+	{
+	    for (int i = 0; i < v.size(); ++i) {
+	    	os <<v[i].getStatus()<<"\t"<<v[i].getStudent_Id();
+	    os<<"\t"<<v[i].getFirst_Name();
+	    os<<"\t"<<v[i].getYear_Hired()<<"\t"<<v[i].getAge()<<"\t"<<v[i].getDept()<<"\t";
+	    os<<endl;
+	    }
+	    return os;
+	}
 
 
 	TAs::TAs(string status,unsigned int student_id,string first_name, unsigned int year_hired,unsigned int age,string dept){
@@ -232,28 +262,44 @@ std::getline(std::cin, dept);
 return newTA;
 	}
 
+void changeList(vector<TAs> x){
+	 ofstream list;
+		list.open("TAs_list4");
 
-	vector<TAs> checkAlum(){
+
+		list<<x.size()<<endl;
+		for (int i = 0; i<x.size(); i++)
+		{
+			x[i].TAs_to_file(list);
+			list<<endl;
+		}
+
+		list.close();
+
+	}
+
+
+vector<TAs> checkAlum(){
 
 		vector<TAs> x;
 		TAs vec;
 
-		ifstream TAs;
+		ifstream list;
 		string a{""};
 		stringstream s[10];
 		string b[10];
 		int i{1},j{0};
 		string k;
 
-		TAs.open("TAs_list4");
-		if (!TAs)
+		list.open("TAs_list4");
+		if (!list)
 		{
 			cerr<<"error";
 		}
 
-		getline(TAs,a);
+		getline(list,a);
 
-			while (getline(TAs, a)) {
+			while (getline(list, a)) {
 
 					        s[i]<<a;
 					        string status, first_name, dept;
@@ -265,7 +311,6 @@ return newTA;
 
 					        if (status != "Alum") {
 					            b[i]=s[i].str();
-					            cout<<s[i].str()<<endl;
 					           vec.changeTA(status,student_id,first_name,year_hired,age,dept);
 					           x.push_back(vec);
 					           j++;
@@ -273,29 +318,12 @@ return newTA;
 					        i++;
 		}
 			b[0]=to_string(j);
-		TAs.close();
+		list.close();
 	changeList(x);
 	return x;
 	}
 
 
-
-void changeList(vector<TAs> x){
-	 ofstream TAs;
-		TAs.open("TAs_list4");
-
-
-		TAs<<x.size()<<endl;
-		for (int i = 0; i<x.size(); i++)
-		{
-			x[i].printTAs(TAs);
-			TAs<<endl;
-
-		}
-
-			TAs.close();
-
-	}
 
 
 void Sort(vector<TAs> x){
@@ -328,10 +356,10 @@ auto sorting=[&]( TAs& t1,  TAs& t2)->bool{
 		break;
 	case 3:
 		if (select2==1){
-					return t1.getStatus()[0]<t2.getStatus()[0];
+					return t1.getFirst_Name()[0]<t2.getFirst_Name()[0];
 				}
 				else if (select2==2){
-					return t1.getStatus()[0]>t2.getStatus()[0];
+					return t1.getFirst_Name()[0]>t2.getFirst_Name()[0];
 				}
 
 		break;
@@ -354,10 +382,10 @@ auto sorting=[&]( TAs& t1,  TAs& t2)->bool{
 
 	case 6:
 	if (select2==1){
-			return t1.getStatus()[0]<t2.getStatus()[0];
+			return t1.getDept()[0]<t2.getDept()[0];
 		}
 		else if (select2==2){
-			return t1.getStatus()[0]>t2.getStatus()[0];
+			return t1.getDept()[0]>t2.getDept()[0];
 		}
 		break;
 	}
@@ -389,14 +417,16 @@ a.changeTA("UGrad", 5436083, "Chems-Eddine" ,2015, 36, "CSSE");
 tas.push_back(a);
 a.changeTA("UGrad" ,8255588 ,"Muhammad", 2018, 31, "CSSE");
 tas.push_back(a);
-a.changeTA("Alum",0,"l",3,3,"l");
+a.changeTA("Alum",1658887,"jim",2015,35,"CSSE");
 tas.push_back(a);
 
+cout<<"List with Alum"<<endl;
 changeList(tas);
+cout<<tas<<endl;
 
-cout<<"List without Alum:"<<endl<<endl;
+cout<<"List without Alum:"<<endl;
 tas=checkAlum();
-
+cout<<tas<<endl;
 
 int menu;
 cout<<"Select 1 to add a TA, 2 to sort, 3 to quit";
@@ -427,3 +457,4 @@ else if (menu==3){
 //https://www.walletfox.com/course/sortvectorofcustomobjects11.php WalletFox for the sort function
 //https://stackoverflow.com/questions/9438209/for-every-character-in-string Kerrek SB for the exception
 //https://stackoverflow.com/questions/2346599/how-to-test-if-a-string-contains-any-digits-in-c KitsuneYMG for the FindFirst function
+

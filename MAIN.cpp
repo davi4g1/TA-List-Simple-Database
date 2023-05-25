@@ -14,8 +14,9 @@ Learning concepts include:
 
 This is a program that allows a user to add to a list of TA's (teacher assistants)
 TA's have a Satus, Student Number, Name, Year Hired, Age and Program
-The program comes with a file called TAs_list4 that explicitely contains a TA with the status "Alum"
-As per assignment requirements, all TA's with the status "Alum" are filtered out at the start.
+The program starts by pushing 7 TA's into a vector and then inputting the vector into a file "TAs_list4".
+It then filters out all the TA's with status "Alum" using the checkAlum() method.
+As per assignment requirements, all TA's with the status "Alum" are then filtered out using the checkAlum() method.
 The new list with no "Alums" is displayed.
 User is prompted to add a TA or Sort the list.
 Sorting can be done by descending or ascending order according to any of the data members of a TA listed before.
